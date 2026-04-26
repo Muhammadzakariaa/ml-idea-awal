@@ -46,9 +46,6 @@ while cap.isOpened():
             elif gesture_text == "BLINK":
                 blink = True
             
-            elif gesture_text == "PARTY":
-                blink = True
-
     # blink logic
     if blink:
         if time.time() - last_time > 0.5:
