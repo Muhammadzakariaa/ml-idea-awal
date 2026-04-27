@@ -1,3 +1,5 @@
+# gesture.py
+
 import mediapipe as mp
 
 mp_hands = mp.solutions.hands
@@ -9,7 +11,6 @@ hands = mp_hands.Hands(
 
 def get_fingers(hand_landmarks):
     tips = [8, 12, 16, 20]
-
     fingers = []
 
     # thumb
@@ -18,7 +19,7 @@ def get_fingers(hand_landmarks):
     else:
         fingers.append(0)
 
-    # 4 jari lain
+    # index, middle, ring, pinky
     for tip in tips:
         if hand_landmarks.landmark[tip].y < hand_landmarks.landmark[tip - 2].y:
             fingers.append(1)
@@ -40,5 +41,9 @@ def detect_gesture(fingers):
     # ✌️ BLINK
     if fingers == [0, 1, 1, 0, 0]:
         return "BLINK"
-    
+
+    # 🤟 RANDOM COLOR
+    if fingers == [1, 1, 0, 0, 1]:
+        return "RANDOM"
+
     return "UNKNOWN"
