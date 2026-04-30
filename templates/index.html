@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Smart Home Dashboard - Fixed Logic</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #121212; color: white; margin: 0; padding: 20px; }
+        .main-layout { display: flex; gap: 20px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+        
+        .camera-section { flex: 1; min-width: 400px; max-width: 640px; border: 4px solid #333; border-radius: 15px; overflow: hidden; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .control-section { flex: 1; min-width: 300px; max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .status-card { background: #1e1e1e; padding: 20px; border-radius: 15px; text-align: center; border-bottom: 5px solid #444; }
+        #gesture-text { font-size: 2.5em; color: #00ffcc; font-weight: bold; margin: 10px 0; }
+        
+        .room-box { background: #252525; padding: 30px; border-radius: 15px; text-align: center; transition: all 0.3s ease; border: 2px solid #333; color: #555; margin-bottom: 15px; }
+        
+        /* CSS State: Warna Orange untuk Dapur */
+        .active-orange { background: #ff9800 !important; color: #000 !important; box-shadow: 0 0 30px #ff9800; border-color: #fff; }
+        
+        /* CSS State: Warna Kuning untuk Ruang Tamu */
+        .active-yellow { background: #ffeb3b !important; color: #000 !important; box-shadow: 0 0 30px #ffeb3b; border-color: #fff; }
+        
+        h1 { text-align: center; color: #00ffcc; margin-bottom: 30px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <h1>AI Smart Home Control</h1>
+
+    <div class="main-layout">
+        <div class="camera-section">
+            <img src="{{ url_for('video_feed') }}" style="width: 100%; display: block;">
+        </div>
+
+        <div class="control-section">
+            <div class="status-card">
+                <p style="margin:0; color: #aaa;">Sinyal Gerakan:</p>
+                <div id="gesture-text">MENCARI...</div>
+            </div>
+
+            <div id="box-dapur" class="room-box">
+                <h2 style="margin:0">DAPUR</h2>
+                <p id="status-dapur">Lampu Mati</p>
+            </div>
+            
+            <div id="box-tamu" class="room-box">
+                <h2 style="margin:0">RUANG TAMU</h2>
+                <p id="status-tamu">Lampu Mati</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const boxDapur = document.getElementById('box-dapur');
+        const statusDapur = document.getElementById('status-dapur');
+        const boxTamu = document.getElementById('box-tamu');
+        const statusTamu = document.getElementById('status-tamu');
+        const gestureDisplay = document.getElementById('gesture-text');
+
+        setInterval(function() {
+            fetch('/get_gesture')
+                .then(response => response.json())
+                .then(data => {
+                    const g = data.gesture.toLowerCase().trim();
+                    gestureDisplay.innerText = g.toUpperCase();
+
+                    // --- LOGIKA ANTI TUMPANG TINDIH (EXCLUSIVE LOGIC) ---
+
+                    if (g === 'peace') {
+                        // Jika Peace: Nyalakan Dapur, PAKSA Ruang Tamu Mati
+                        nyalakanDapur();
+                        matikanTamu();
+                    } 
+                    else if (g === 'four') {
+                        // Jika Four: Nyalakan Ruang Tamu, PAKSA Dapur Mati
+                        nyalakanTamu();
+                        matikanDapur();
+                    } 
+                    else if (g === 'fist' || g === 'stop' || g === 'tidak ada tangan' || g === 'none') {
+                        // Jika Fist/Stop: Matikan Keduanya
+                        matikanDapur();
+                        matikanTamu();
+                    }
+                    // Jika terdeteksi gerakan lain yang tidak terdaftar, biarkan status terakhir atau matikan
+                });
+        }, 100);
+
+        function nyalakanDapur() {
+            boxDapur.classList.add('active-orange');
+            statusDapur.innerText = "MENYALA (ORANGE)";
+        }
+
+        function matikanDapur() {
+            boxDapur.classList.remove('active-orange');
+            statusDapur.innerText = "Lampu Mati";
+        }
+
+        function nyalakanTamu() {
+            boxTamu.classList.add('active-yellow');
+            statusTamu.innerText = "MENYALA (KUNING)";
+        }
+
+        function matikanTamu() {
+            boxTamu.classList.remove('active-yellow');
+            statusTamu.innerText = "Lampu Mati";
+        }
+    </script>
+</body>
+</html>
