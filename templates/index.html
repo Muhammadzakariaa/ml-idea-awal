@@ -13,13 +13,17 @@
         .status-card { background: #1e1e1e; padding: 20px; border-radius: 15px; text-align: center; border-bottom: 5px solid #444; }
         #gesture-text { font-size: 2.5em; color: #00ffcc; font-weight: bold; margin: 10px 0; }
         
-        .room-box { background: #252525; padding: 30px; border-radius: 15px; text-align: center; transition: all 0.3s ease; border: 2px solid #333; color: #555; margin-bottom: 15px; }
+        /* Properti background diubah menjadi background-color agar transisi warna lancar */
+        .room-box { background-color: #252525 !important; padding: 30px; border-radius: 15px; text-align: center; transition: background-color 0.3s ease, box-shadow 0.3s ease; border: 2px solid #333; color: #ffffff; margin-bottom: 15px; }
         
         /* CSS State: Warna Orange untuk Dapur */
-        .active-orange { background: #ff9800 !important; color: #000 !important; box-shadow: 0 0 30px #ff9800; border-color: #fff; }
+        .room-box.active-orange { background-color: #ff9800 !important; color: #000000 !important; box-shadow: 0 0 30px #ff9800; border-color: #ffffff; }
         
         /* CSS State: Warna Kuning untuk Ruang Tamu */
-        .active-yellow { background: #ffeb3b !important; color: #000 !important; box-shadow: 0 0 30px #ffeb3b; border-color: #fff; }
+        .room-box.active-yellow { background-color: #ffeb3b !important; color: #000000 !important; box-shadow: 0 0 30px #ffeb3b; border-color: #ffffff; }
+        
+        /* CSS State Baru: Warna Biru untuk Kamar (Diperketat selektornya agar menang prioritas render browser) */
+        .room-box.active-blue { background-color: #00bcd4 !important; color: #000000 !important; box-shadow: 0 0 30px #00bcd4; border-color: #ffffff; }
         
         h1 { text-align: center; color: #00ffcc; margin-bottom: 30px; text-transform: uppercase; }
     </style>
@@ -48,6 +52,11 @@
                 <h2 style="margin:0">RUANG TAMU</h2>
                 <p id="status-tamu">Lampu Mati</p>
             </div>
+
+            <div id="box-kamar" class="room-box">
+                <h2 style="margin:0">KAMAR</h2>
+                <p id="status-kamar">Lampu Mati</p>
+            </div>
         </div>
     </div>
 
@@ -56,54 +65,79 @@
         const statusDapur = document.getElementById('status-dapur');
         const boxTamu = document.getElementById('box-tamu');
         const statusTamu = document.getElementById('status-tamu');
+        const boxKamar = document.getElementById('box-kamar');
+        const statusKamar = document.getElementById('status-kamar');
         const gestureDisplay = document.getElementById('gesture-text');
 
         setInterval(function() {
             fetch('/get_gesture')
                 .then(response => response.json())
                 .then(data => {
-                    const g = data.gesture.toLowerCase().trim();
+                    let g = data.gesture.toLowerCase().trim();
                     gestureDisplay.innerText = g.toUpperCase();
 
-                    // --- LOGIKA ANTI TUMPANG TINDIH (EXCLUSIVE LOGIC) ---
+                    // Normalisasi teks agar spasi/strip berubah jadi underscore (_)
+                    let g_clean = g.replace(/ /g, '_').replace(/-/g, '_');
 
-                    if (g === 'peace') {
-                        // Jika Peace: Nyalakan Dapur, PAKSA Ruang Tamu Mati
+                    // --- LOGIKA UTAMA SAKLAR ---
+                    if (g_clean === 'peace') {
                         nyalakanDapur();
                         matikanTamu();
+                        matikanKamar();
                     } 
-                    else if (g === 'four') {
-                        // Jika Four: Nyalakan Ruang Tamu, PAKSA Dapur Mati
+                    else if (g_clean === 'four') {
                         nyalakanTamu();
                         matikanDapur();
+                        matikanKamar();
                     } 
-                    else if (g === 'fist' || g === 'stop' || g === 'tidak ada tangan' || g === 'none') {
-                        // Jika Fist/Stop: Matikan Keduanya
+                    else if (g_clean === 'two_up_inverted' || g_clean === 'twoupinverted') {
+                        nyalakanKamar();
                         matikanDapur();
                         matikanTamu();
                     }
-                    // Jika terdeteksi gerakan lain yang tidak terdaftar, biarkan status terakhir atau matikan
-                });
+                    else if (g_clean === 'fist' || g_clean === 'stop' || g_clean === 'tidak_ada_tangan' || g_clean === 'none' || g_clean === '') {
+                        matikanAll();
+                    }
+                })
+                .catch(err => console.error("Error fetching gesture:", err));
         }, 100);
 
+        // --- KONTROL DAPUR ---
         function nyalakanDapur() {
             boxDapur.classList.add('active-orange');
             statusDapur.innerText = "MENYALA (ORANGE)";
         }
-
         function matikanDapur() {
             boxDapur.classList.remove('active-orange');
             statusDapur.innerText = "Lampu Mati";
         }
 
+        // --- KONTROL RUANG TAMU ---
         function nyalakanTamu() {
             boxTamu.classList.add('active-yellow');
             statusTamu.innerText = "MENYALA (KUNING)";
         }
-
         function matikanTamu() {
+            boxTamu.className = 'room-box';
             boxTamu.classList.remove('active-yellow');
             statusTamu.innerText = "Lampu Mati";
+        }
+
+        // --- KONTROL KAMAR ---
+        function nyalakanKamar() {
+            boxKamar.classList.add('active-blue');
+            statusKamar.innerText = "MENYALA (BIRU)";
+        }
+        function matikanKamar() {
+            boxKamar.classList.remove('active-blue');
+            statusKamar.innerText = "Lampu Mati";
+        }
+
+        // --- RECOVERY RESETTER ALL ---
+        function matikanAll() {
+            matikanDapur();
+            matikanTamu();
+            matikanKamar();
         }
     </script>
 </body>
