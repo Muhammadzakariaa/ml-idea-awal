@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv('../data/raw/dataset.csv')
+df = pd.read_csv('../data/processed/hand_landmarks_data_clean.csv')
 
 print("=== SHAPE ===")
 print(df.shape)

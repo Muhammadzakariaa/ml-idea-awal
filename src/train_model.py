@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score, classification_report
 # 1. LOAD DATASET
 # =====================================================================
 # Membaca file database koordinat tangan yang sudah Anda kumpulkan sebelumnya
-df = pd.read_csv('../data/raw/dataset.csv')
+df = pd.read_csv('../data/processed/hand_landmarks_data_clean.csv')
 
 # =====================================================================
 # 2. SEPARASI FITUR DAN LABEL
