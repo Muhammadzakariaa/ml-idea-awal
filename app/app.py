@@ -7,8 +7,8 @@ from flask import Flask, render_template, Response, jsonify
 app = Flask(__name__)
 
 # Load Model dan Label Encoder
-model = pickle.load(open('model.pkl', 'rb'))
-le = pickle.load(open('label_encoder.pkl', 'rb'))
+model = pickle.load(open('../models/model.pkl', 'rb'))
+le = pickle.load(open('../models/label_encoder.pkl', 'rb'))
 
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7)
