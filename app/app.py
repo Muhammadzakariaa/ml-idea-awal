@@ -7,8 +7,20 @@ from flask import Flask, render_template, Response, jsonify
 app = Flask(__name__)
 
 # Load Model dan Label Encoder
-model = pickle.load(open('../models/model.pkl', 'rb'))
-le = pickle.load(open('../models/label_encoder.pkl', 'rb'))
+import os
+model_path = 'models/model.pkl'
+le_path = 'models/label_encoder.pkl'
+
+if not os.path.exists(model_path):
+    model_path = '../models/model.pkl'
+    le_path = '../models/label_encoder.pkl'
+
+if os.path.exists(model_path):
+    model = pickle.load(open(model_path, 'rb'))
+    le = pickle.load(open(le_path, 'rb'))
+else:
+    raise FileNotFoundError(f"Model pkl tidak ditemukan di 'models/model.pkl' maupun '{model_path}'")
+
 
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7)
@@ -64,4 +76,4 @@ def get_gesture():
     return jsonify(gesture=current_gesture)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)

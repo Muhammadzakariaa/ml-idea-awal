@@ -6,18 +6,30 @@ import os
 # =====================================================================
 # CONFIGURATION
 # =====================================================================
-MODEL_PATH = 'model.pkl'
-ENCODER_PATH = 'label_encoder.pkl'
+MODEL_PATH = 'models/model.pkl'
+ENCODER_PATH = 'models/label_encoder.pkl'
 
 def load_resources():
-    try:
-        model = pickle.load(open(MODEL_PATH, 'rb'))
-        le = pickle.load(open(ENCODER_PATH, 'rb'))
-        return model, le
-    except FileNotFoundError:
-        print(f"[-] Error: File '{MODEL_PATH}' atau '{ENCODER_PATH}' tidak ditemukan.")
-        print("[*] Pastikan file tersebut berada di folder yang sama dengan script ini.")
-        return None, None
+    global MODEL_PATH, ENCODER_PATH
+    # Coba beberapa lokasi alternatif
+    paths_to_try = [
+        (MODEL_PATH, ENCODER_PATH),
+        ('../models/model.pkl', '../models/label_encoder.pkl'),
+        ('model.pkl', 'label_encoder.pkl'),
+        ('../model.pkl', '../label_encoder.pkl')
+    ]
+    
+    for m_p, e_p in paths_to_try:
+        if os.path.exists(m_p) and os.path.exists(e_p):
+            try:
+                model = pickle.load(open(m_p, 'rb'))
+                le = pickle.load(open(e_p, 'rb'))
+                return model, le
+            except Exception:
+                pass
+                
+    print(f"[-] Error: File model atau label encoder tidak ditemukan di lokasi mana pun.")
+    return None, None
 
 def generate_ascii_bar(value, max_value=1.0, length=20):
     """Membuat grafik batang sederhana di terminal berbasis karakter ASCII"""
