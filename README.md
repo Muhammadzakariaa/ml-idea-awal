@@ -51,8 +51,8 @@ capstone-project-data-mining/
 │   └── assets/               # Gambar, aset visual, dan tangkapan layar antarmuka
 │
 ├── reports/
-│   ├── Laporan_UAS.md        # Draf Laporan Teknis Lengkap format Markdown
-│   └── final_report.pdf      # Laporan Akhir UAS Pembelajaran Mesin (format PDF)
+│   ├── Final_Report_Laporan_UAS_Hand_Gesture_Recognition_A11.2024.16031.pdf # Laporan Akhir UAS Pembelajaran Mesin (format PDF)
+│   └── Presentasion_Klasifikasi_Gestur_Tangan_Smart_Home_A11.2024.16031.pptx # Presentasi PowerPoint Klasifikasi Gestur Tangan (format PPTX)
 │
 ├── requirements.txt          # Daftar dependensi pustaka Python
 └── README.md                 # Dokumentasi utama proyek
@@ -65,20 +65,41 @@ capstone-project-data-mining/
 ### 1. Prasyarat (Prerequisites)
 Pastikan Anda sudah menginstal Python (versi 3.9 s.d 3.11 direkomendasikan) di sistem Anda.
 
-### 2. Instalasi Dependensi
-Buka terminal/powershell di root repositori ini, lalu instal dependensi dari file `requirements.txt`:
+### 2. Membuat & Mengaktifkan Virtual Environment (venv)
+Untuk mengisolasi pustaka Python proyek ini dari sistem global Anda dan mencegah konflik versi, buatlah virtual environment (`venv`):
+
+- **Windows (PowerShell):**
+  ```powershell
+  python -m venv venv
+  .\venv\Scripts\Activate.ps1
+  ```
+- **Windows (CMD):**
+  ```cmd
+  python -m venv venv
+  .\venv\Scripts\activate.bat
+  ```
+- **macOS / Linux:**
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate
+  ```
+
+### 3. Instalasi Dependensi (requirements.txt)
+File `requirements.txt` berisi daftar pustaka (library) Python beserta versi spesifiknya yang digunakan untuk menjalankan seluruh program (Flask, Streamlit, pemrosesan video MediaPipe, pelatihan model Machine Learning, dll.) agar berjalan secara konsisten di komputer Anda.
+
+Setelah mengaktifkan virtual environment (`venv`), jalankan perintah berikut untuk menginstal seluruh dependensi:
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Menjalankan Aplikasi Web Smart Home (Flask)
+### 4. Menjalankan Aplikasi Web Smart Home (Flask)
 Aplikasi ini menjalankan web server lokal untuk demonstrasi kontrol saklar lampu virtual di 3 ruangan (Dapur, Ruang Tamu, Kamar) menggunakan kamera webcam real-time:
 ```bash
 python app/app.py
 ```
 Akses di browser Anda melalui tautan: `http://127.0.0.1:5000`
 
-### 4. Menjalankan Aplikasi Dashboard Analisis (Streamlit)
+### 5. Menjalankan Aplikasi Dashboard Analisis (Streamlit)
 Aplikasi Streamlit ini memuat Dashboard EDA, Demo Prediksi Kamera statis, metrik Evaluasi Model (Confusion Matrix, ROC Curve), dan Interpretasi SHAP:
 ```bash
 streamlit run app/streamlit_app.py
