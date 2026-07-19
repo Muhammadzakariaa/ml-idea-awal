@@ -6,3 +6,6 @@ __pycache__/
 *.pkl
 __pycache__/
 dataset/
+
+# Temporary Microsoft Office / PowerPoint files
+~$*
