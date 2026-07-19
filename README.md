@@ -30,7 +30,7 @@ capstone-project-data-mining/
 │   └── external/             # Data referensi eksternal (jika ada)
 │
 ├── notebooks/
-│   ├── 01_eda.ipynb          # Exploratory Data Analysis & Visualisasi Landmark
+│   ├── 01_hand_gesture_eda.ipynb # Exploratory Data Analysis & Visualisasi Landmark
 │   ├── 02_modeling.ipynb     # Pelatihan Model (RF vs SVM) & Tuning Hyperparameter
 │   └── 03_interpretation.ipynb # Interpretasi Model dengan SHAP
 │
@@ -63,7 +63,7 @@ capstone-project-data-mining/
 ## 🚀 Cara Menjalankan Proyek
 
 ### 1. Prasyarat (Prerequisites)
-Pastikan Anda sudah menginstal Python (versi 3.9 s.d 3.11 direkomendasikan) di sistem Anda.
+Pastikan Anda sudah menginstal **Python 3.11.9** (versi yang direkomendasikan dan diuji untuk proyek ini).
 
 ### 2. Membuat & Mengaktifkan Virtual Environment (venv)
 Untuk mengisolasi pustaka Python proyek ini dari sistem global Anda dan mencegah konflik versi, buatlah virtual environment (`venv`):
@@ -117,3 +117,44 @@ Akses di browser Anda melalui tautan yang muncul di terminal (biasanya `http://l
   - **Random Forest (Tuned):** **82.03%**.
 - **Analisis SHAP (Interpretasi):**
   - Mengungkap bahwa koordinat jari telunjuk (`x8, y8`), jari tengah (`x12, y12`), dan ibu jari (`x4, y4`) memiliki nilai impak (SHAP value) tertinggi pada gestur seperti `peace` dan `two_up_inverted`.
+
+---
+
+## 📓 Panduan Jupyter Notebooks
+
+Folder [notebooks/](file:///d:/ml-experiment/notebooks) berisi 3 tahapan eksperimen interaktif:
+
+1. **[01_hand_gesture_eda.ipynb](file:///d:/ml-experiment/notebooks/01_hand_gesture_eda.ipynb)**:
+   - **Tujuan**: Exploratory Data Analysis (EDA) terhadap koordinat landmark tangan.
+   - **Konten**: Visualisasi sebaran kelas gestur tangan, distribusi fitur koordinat `x`, `y`, `z`, dan penggambaran sendi tangan menggunakan MediaPipe.
+
+2. **[02_modeling.ipynb](file:///d:/ml-experiment/notebooks/02_modeling.ipynb)**:
+   - **Tujuan**: Pelatihan model Machine Learning klasik.
+   - **Konten**: Membandingkan model **Support Vector Machine (SVM)** dengan **Random Forest**, melakukan hyperparameter tuning dengan Grid Search, serta mengevaluasi metrik klasifikasi seperti Precision, Recall, F1-Score, dan Accuracy.
+
+3. **[03_interpretation.ipynb](file:///d:/ml-experiment/notebooks/03_interpretation.ipynb)**:
+   - **Tujuan**: Menjelaskan prediksi model menggunakan Explainable AI (XAI).
+   - **Konten**: Menggunakan library **SHAP (SHapley Additive exPlanations)** untuk melihat kontribusi spasial koordinat jari tangan (misalnya jari telunjuk, tengah, jempol) terhadap hasil klasifikasi model.
+
+### ⚙️ Menjalankan Notebooks menggunakan Virtual Environment (`venv`) Python 3.11.9
+
+Agar Jupyter Notebook dapat menggunakan environment dan dependensi yang sesuai di dalam `venv` Python 3.11.9, ikuti langkah-langkah berikut:
+
+#### Langkah 1: Registrasi Kernel `venv` ke Jupyter
+Setelah membuat dan mengaktifkan virtual environment, serta menginstal seluruh dependensi (`requirements.txt`), daftarkan `venv` Anda sebagai kernel Jupyter:
+```bash
+python -m ipykernel install --user --name=venv --display-name "venv (3.11.9)"
+```
+
+#### Langkah 2: Jalankan Jupyter
+Jalankan server Jupyter Notebook dari terminal Anda:
+```bash
+jupyter notebook
+```
+Atau jika Anda menggunakan **VS Code**:
+1. Buka file notebook (`.ipynb`) di VS Code.
+2. Klik tombol **Select Kernel** di pojok kanan atas editor.
+3. Pilih **Python Environments...** lalu pilih interpreter dari `./venv/Scripts/python.exe`.
+
+#### Langkah 3: Pilih Kernel di Notebook
+Pastikan kernel yang terpilih di pojok kanan atas notebook adalah **venv (3.11.9)** sebelum menjalankan cell kode.
